@@ -1,0 +1,22 @@
+server {
+        #Ports configuration
+        listen 80 default_server;
+        listen [::]:80 default_server;
+        access_log /var/log/nginx/proxy_requests.log proxy_request;
+
+        # Use OpenDNS as secure DNS resolver
+        resolver 208.67.222.222;
+
+        location / {
+                # Block access from internet
+                allow 10.0.0.0/8;
+                allow 127.0.0.0/8;
+                allow 172.16.0.0/12;
+                allow 192.168.0.0/16;
+                deny all;
+                
+                # Forward petition to the destination
+                proxy_pass $scheme://$http_host$request_uri;
+        }
+
+}
