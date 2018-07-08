@@ -1,51 +1,36 @@
 
 # ncproxy
 
-Welcome to your new module. A short overview of the generated parts can be found in the PDK documentation at https://puppet.com/pdk/latest/pdk_generating_modules.html .
-
-The README template below provides a starting point with details about what information to include in your README.
-
-
-
-
-
-
-
 #### Table of Contents
 
 1. [Description](#description)
-2. [Setup - The basics of getting started with ncproxy](#setup)
-    * [What ncproxy affects](#what-ncproxy-affects)
+2. [Setup](#setup)
+    * [Files created by the module](#Files-created-by-the-module)
     * [Setup requirements](#setup-requirements)
     * [Beginning with ncproxy](#beginning-with-ncproxy)
 3. [Usage - Configuration options and additional functionality](#usage)
-4. [Limitations - OS compatibility, etc.](#limitations)
-5. [Development - Guide for contributing to the module](#development)
+4. [Limitations](#limitations)
 
 ## Description
 
-Briefly tell users why they might want to use your module. Explain what your module does and what kind of problems users can solve with it.
+This NGINX proxy module installs NGINX and add the following configuration:
 
-This should be a fairly short description helps the user decide if your module is what they want.
+* A reverse proxy for domain.com, redirecting everything to 10.10.10.10 but requests to resource2, redirected to 20.20.20.20. It adds the RFC 7239 Forwarded header to the backend servers, as well as the tradition X-forwarded-for.
+* A forward HTTP proxy with the sole objetive to log petitions. The log format includes request protocol, remote IP and time taken to serve the request.
 
 
 ## Setup
 
-### What ncproxy affects **OPTIONAL**
+### Files created by the module
 
-If it's obvious what your module touches, you can skip this section. For example, folks can probably figure out that your mysql_instance module affects their MySQL instances.
+This module creates the following configuration files in NGINX conf.d directory:
+    
+    * forward-headers.conf: contains instructions to create the Forwarded header (RFC7239).
+    * proxy_log.conf: log format definition for the forward proxy.`
 
-If there's more that they should know about, though, this is the place to mention:
+### Setup Requirements
 
-* Files, packages, services, or operations that the module will alter, impact, or execute.
-* Dependencies that your module automatically installs.
-* Warnings or other important notices.
-
-### Setup Requirements **OPTIONAL**
-
-If your module requires anything extra before setting up (pluginsync enabled, another module, etc.), mention it here.
-
-If your most recent release breaks compatibility or requires particular steps for upgrading, you might want to include an additional "Upgrading" section here.
+This module depends on the [rehan-nginx](https://forge.puppet.com/rehan/nginx) version 2.0.2, so it should be installed prior using this module.
 
 ### Beginning with ncproxy
 
@@ -84,12 +69,4 @@ Default: 'medium-loud'.
 
 ## Limitations
 
-In the Limitations section, list any incompatibilities, known issues, or other warnings.
-
-## Development
-
-In the Development section, tell other users the ground rules for contributing to your project and how they should submit their work.
-
-## Release Notes/Contributors/Etc. **Optional**
-
-If you aren't using changelog, put your release notes here (though you should consider using changelog). You can also add any additional sections you feel are necessary or important to include here. Please use the `## ` header.
+Currently this module only works with Debian based Linux distribution.

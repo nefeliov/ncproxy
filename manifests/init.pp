@@ -1,6 +1,7 @@
-# A description of what this class does
+# Installs NINGX and includes the configuration files and
+# server definitions required by the Netcentric selection test
 #
-# @summary A short summary of the purpose of this class
+# @summary Installs and configure NGNIX as required for Netcentric selection test
 #
 # @example
 #   include ncproxy
@@ -8,7 +9,6 @@
 # TODO: Add puppet NGINX module to dependencies!!
 # TODO: delete default site file in sites available
 # TODO: test
-# TODO: documentation
 # TODO: improve quality (add variables, templates, etc) if enough time
 class ncproxy {
     class{ 'nginx':
@@ -28,6 +28,7 @@ class ncproxy {
             source => 'puppet:///modules/ncproxy/01_reverse_proxy'}),
         },
   
+        
         nginx::resource::config { 'proxy_log.conf':
             source => 'puppet:///modules/ncproxy/proxy_log.conf'}),
         },
