@@ -2,11 +2,14 @@
   "name": "nefeli-ncproxy",
   "version": "0.1.0",
   "author": "Oscar Vidakovic",
-  "summary": "",
+  "summary": "Installs and configure NGNIX as required for Netcentric selection test",
   "license": "Apache-2.0",
-  "source": "",
+  "source": "git://github.com/nefeliov/ncproxy.git",
   "dependencies": [
-
+    {
+        "name": "rehanone/puppet-nginx",
+        "version_requirement": "= 2.0.2"
+    }
   ],
   "operatingsystem_support": [
     {
