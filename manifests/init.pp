@@ -33,21 +33,21 @@ class ncproxy {
     }
     
     nginx::resource::config { 'proxy_log.conf':
-        source => 'puppet:///modules/ncproxy/proxy_log.conf'}),
+        source => 'puppet:///modules/ncproxy/proxy_log.conf',
     }
 
     nginx::resource::config { 'forward-headers.conf':
-        source => 'puppet:///modules/ncproxy/forward-headers.conf'}),
+        source => 'puppet:///modules/ncproxy/forward-headers.conf',
     }
 
     nginx::resource::vhosts { '01_reverse_proxy':
         enabled => true,
-        source => 'puppet:///modules/ncproxy/01_reverse_proxy'}),
+        source => 'puppet:///modules/ncproxy/01_reverse_proxy',
     }
 
     nginx::resource::vhosts { '02_forward_proxy':
         enabled => true,
-        source => 'puppet:///modules/ncproxy/02_forward_proxy'}),
+        source => 'puppet:///modules/ncproxy/02_forward_proxy',
     }
         
 }
