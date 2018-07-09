@@ -4,11 +4,21 @@
 # @summary Installs and configure NGNIX as required for Netcentric selection test
 #
 # @example
-#   include ncproxy
+#   class { 'ncproxy': }
 
-# TODO: test
-# TODO: improve quality (add variables, templates, etc) if enough time
+# TODO: use nginx "configs" and "vhosts" to install files, instead of mine
+# TODO: improve quality (add variables, templates, etc)
 class ncproxy {
+    
+    $nginx_config_dir = "/etc/nginx"
+    
+    
+    # Installs ssl-cert, needed for snakeoil certificate
+    package { 'ssl-cert':
+        ensure  => latest,
+    }
+    
+   
     class{ 'nginx':
         repo_manage          => false,
         package_name         => 'nginx',
@@ -24,30 +34,55 @@ class ncproxy {
         vhosts               => hiera_hash('nginx::vhosts', {}),
     }
     
-    # TODO: As I'm not sure if enabled_sites_manage will purge all sites enabled 
-    # and recreate symlinks on each puppet invocation if all information is not 
-    # included in the hiera_hash in the nginx class invokation, so I preferred
-    # set it to false and ensure default site is deleted here
-    file { '/etc/nginx/sites-enabled/default':
+    # Ensure default site is not enabled, as I'm managing sites from appart the
+    # ntginx module
+    file { "${nginx_config_dir}/sites-enabled/default":
         ensure => absent,
     }
     
-    nginx::resource::config { 'proxy_log.conf':
-        source => 'puppet:///modules/ncproxy/proxy_log.conf',
+    # Copy NGINX config files
+    file { "${nginx_config_dir}/conf.d/forward-headers.conf":
+        mode    => '644',
+        owner   => 'root',
+        group   => 'root',
+        ensure   => present,
+        source  => "puppet:///modules/ncproxy/forward-headers.conf",
+        notify  => Service['nginx'],
+    }
+    file { "${nginx_config_dir}/conf.d/proxy_log.conf":
+        mode    => '644',
+        owner   => 'root',
+        group   => 'root',
+        ensure   => present,
+        source  => "puppet:///modules/ncproxy/proxy_log.conf",
+        notify  => Service['nginx'],
+    }
+    # Copy NGINX sites definitions (aka virtial hosts)
+    file { "${nginx_config_dir}/sites-available/01_reverse_proxy":
+        mode    => '644',
+        owner   => 'root',
+        group   => 'root',
+        ensure   => present,
+        source  => "puppet:///modules/ncproxy/01_reverse_proxy",
+        notify  => Service['nginx'],
+    }
+    file { "${nginx_config_dir}/sites-available/02_forward_proxy":
+        mode    => '644',
+        owner   => 'root',
+        group   => 'root',
+        ensure   => present,
+        source  => "puppet:///modules/ncproxy/02_forward_proxy",
+        notify  => Service['nginx'],
+    }
+    
+    # Enable servers
+    file { "${nginx_config_dir}/sites-enabled/01_reverse_proxy":
+        ensure   => link,
+        target   => "${nginx_config_dir}/sites-available/01_reverse_proxy",
+    }
+    file { "${nginx_config_dir}/sites-enabled/02_forward_proxy":
+        ensure   => link,
+        target   => "${nginx_config_dir}/sites-available/02_forward_proxy",
     }
 
-    nginx::resource::config { 'forward-headers.conf':
-        source => 'puppet:///modules/ncproxy/forward-headers.conf',
-    }
-
-    nginx::resource::vhosts { '01_reverse_proxy':
-        enabled => true,
-        source => 'puppet:///modules/ncproxy/01_reverse_proxy',
-    }
-
-    nginx::resource::vhosts { '02_forward_proxy':
-        enabled => true,
-        source => 'puppet:///modules/ncproxy/02_forward_proxy',
-    }
-        
 }
