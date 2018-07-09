@@ -7,8 +7,7 @@
 2. [Setup](#setup)
     * [Files created by the module](#Files-created-by-the-module)
     * [Setup requirements](#setup-requirements)
-    * [Beginning with ncproxy](#beginning-with-ncproxy)
-3. [Usage - Configuration options and additional functionality](#usage)
+3. [Usage](#usage)
 4. [Limitations](#limitations)
 
 ## Description
@@ -24,49 +23,34 @@ This NGINX proxy module installs NGINX and add the following configuration:
 ### Files created by the module
 
 This module creates the following configuration files in NGINX conf.d directory:
-    
-    * forward-headers.conf: contains instructions to create the Forwarded header (RFC7239).
-    * proxy_log.conf: log format definition for the forward proxy.`
+
+* forward-headers.conf: contains instructions to create the Forwarded header (RFC7239).
+* proxy_log.conf: log format definition for the forward proxy.
+
+The following files in NGINX sites-available directory:
+
+* 01_reverse_proxy
+* 02_forward_proxy
+
+And corresponding symlinks in the sites-enabled directory.
 
 ### Setup Requirements
 
-This module depends on the [rehan-nginx](https://forge.puppet.com/rehan/nginx) version 2.0.2, so it should be installed prior using this module.
+This module depends on the [rehan-nginx](https://forge.puppet.com/rehan/nginx) version 2.0.2, so it should be installed prior using this module. So please, use the folling command to install it:
 
-### Beginning with ncproxy
+```puppet module install rehan-nginx --version 2.0.2```
 
-The very basic steps needed for a user to get the module up and running. This can include setup steps, if necessary, or it can be an example of the most basic use of the module.
+This module is not avaiable in puppet forge, so you should download it from github and install it manually in your modules directory corresponding to your environment.
 
 ## Usage
 
-Include usage examples for common use cases in the **Usage** section. Show your users how to use your module to solve problems, and be sure to include code examples. Include three to five examples of the most important or common tasks a user can accomplish with your module. Show users how to accomplish more complex tasks that involve different types, classes, and functions working in tandem.
+As this module does not accept parameters, the usage is quite easy. Just add this to your manifest:
 
-## Reference
+```class { 'ncproxy': }```
 
-This section is deprecated. Instead, add reference information to your code as Puppet Strings comments, and then use Strings to generate a REFERENCE.md in your module. For details on how to add code comments and generate documentation with Strings, see the Puppet Strings [documentation](https://puppet.com/docs/puppet/latest/puppet_strings.html) and [style guide](https://puppet.com/docs/puppet/latest/puppet_strings_style.html)
-
-If you aren't ready to use Strings yet, manually create a REFERENCE.md in the root of your module directory and list out each of your module's classes, defined types, facts, functions, Puppet tasks, task plans, and resource types and providers, along with the parameters for each.
-
-For each element (class, defined type, function, and so on), list:
-
-  * The data type, if applicable.
-  * A description of what the element does.
-  * Valid values, if the data type doesn't make it obvious.
-  * Default value, if any.
-
-For example:
-
-```
-### `pet::cat`
-
-#### Parameters
-
-##### `meow`
-
-Enables vocalization in your cat. Valid options: 'string'.
-
-Default: 'medium-loud'.
-```
+and you will have it running.
 
 ## Limitations
 
-Currently this module only works with Debian based Linux distribution.
+* It doesn't use config parameters.
+* This module only works with Debian based Linux distribution.
